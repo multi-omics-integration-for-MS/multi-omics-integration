@@ -1,14 +1,14 @@
-,CellType,Literature1,Literature2
-0,T cells,CD4 T Cell,CD8 T Cell
-1,T cells,CD4 T Cell,CD8 T Cell
-2,B cells,None,None
-3,T cells,T Cell,CD8 T Cell
-4,T cells,T Cell,CD8 T Cell
+,CellTypist,Literature,Litterature (T Cells subtypes)
+0,T Cell,CD4 T Cell,CD8 T Cell
+1,T Cell,CD4 T Cell,CD8 T Cell
+2,B Cell,None,None
+3,T Cell,T Cell,CD8 T Cell
+4,T Cell,T Cell,CD8 T Cell
 5,ILC,NK Cell,CD8 T Cell
 6,None,None,CD8 T Cell
 7,None,T Cell,CD8 T Cell
-8,B cells,B Cell,None
-9,B cells,B Cell,Naive T Cell
+8,B Cell,B Cell,None
+9,B Cell,B Cell,Naive T Cell
 10,None,None,CD4 T Cell
 11,Monocytes,Monocytes,None
 12,HSC/MPP,None,CD8 T Cell
