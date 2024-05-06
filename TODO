@@ -1,0 +1,32 @@
+### TODO
+
+- [ ] 11_BBKNN_GSE239626_GSE138266.ipynb
+    - [ ] Memory error in sc.tl.ingest: FIX
+    - [ ] or find an other way to integrate the new dataset with the reference dataset
+
+- [ ] dopo aver controllato labels in 08_cell_types_from_proteins_clustering.ipynb:
+
+    - [ ] 03_GSE239626_labels_from_proteins.ipynb
+        - [ ] Infer cell types for dataset GSE23962 from clustering protein and save in csv
+
+    - [ ] BBKNN
+        - [ ] run 10_BBKNN_GSE239626_GSE194078.ipynb and 11_BBKNN_GSE239626_GSE138266.ipynb
+        - [ ] SAVE labels for datasets GSE194078 and GSE138266
+
+    - [ ] 12_transcriptomic_dataset.ipynb
+        - [ ] add new genes to GSE194078
+        - [ ] concatenate all transcriptomic dataset
+        - [ ] add cell types labels
+        - [ ] split CSF and PBMC
+        - [ ] split HC and patiens
+        - [ ] split train and test with stratification on labels and HC/P (both for CSF and PBMC)
+
+    - [ ] 13_EDA_transcriptomic_dataset.ipynb
+        - [ ] EDA train set
+        - [ ] split train and validation
+
+- [ ] MRI?
+    - [ ] 14_MRI_data.ipynb
+    - [ ]brain lesion also in GSE173787
+
+- [ ] Metabolomic?
