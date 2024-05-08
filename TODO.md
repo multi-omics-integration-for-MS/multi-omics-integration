@@ -11,13 +11,13 @@
 - [ ] dopo aver controllato labels in 08_cell_types_from_proteins_clustering.ipynb:
 
     - [X] 03_GSE239626_labels_from_proteins.ipynb
-        - [ ] Infer cell types for dataset GSE23962 from clustering protein and save in csv
+        - [X] Infer cell types for dataset GSE23962 from clustering protein and save in csv
 
-    - [X] BBKNN
-        - [ ] run 10_BBKNN_GSE239626_GSE194078.ipynb and 11_BBKNN_GSE239626_GSE138266.ipynb
-        - [ ] SAVE labels for datasets GSE194078 and GSE138266
+    - [X] BBKNN (NON FARE, non integra correttamente i dataset!)
+        - [X] run 10_BBKNN_GSE239626_GSE194078.ipynb and 11_BBKNN_GSE239626_GSE138266.ipynb
+        - [X] SAVE labels for datasets GSE194078 and GSE138266
     
-    -[ ] BBKNN non integra correttamente, usare altra lib
+    - [ ] BBKNN non integra correttamente, usare altra lib (in R)
 
     - [ ] 12_transcriptomic_dataset.ipynb
         - [ ] add new genes to GSE194078
