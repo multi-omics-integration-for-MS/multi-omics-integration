@@ -25,11 +25,10 @@
         - [X] add cell types labels
         - [X] split CSF and PBMC
         - [ ] split HC and patiens
-        - [ ] split train and test with stratification on labels and HC/P (both for CSF and PBMC)
+        - [X] split train and test with stratification on labels and HC/P (both for CSF and PBMC) (NOT TO DO)
 
     - [ ] 13_EDA_transcriptomic_dataset.ipynb
-        - [ ] EDA train set
-        - [ ] split train and validation
+        - [ ] EDA tutto dataset
 
 - [X] MRI? (NOT TO DO)
     - [ ] 14_MRI_data.ipynb
