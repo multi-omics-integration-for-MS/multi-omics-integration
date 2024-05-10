@@ -8,7 +8,7 @@
     - [X] or find an other way to integrate the new dataset with the reference dataset
     - [ ] tempo ingest+BBKNN su 1/8 dataset: 25 min
 
-- [ ] dopo aver controllato labels in 08_cell_types_from_proteins_clustering.ipynb:
+- [X] dopo aver controllato labels in 08_cell_types_from_proteins_clustering.ipynb:
 
     - [X] 03_GSE239626_labels_from_proteins.ipynb
         - [X] Infer cell types for dataset GSE23962 from clustering protein and save in csv
@@ -22,8 +22,8 @@
     - [ ] 12_transcriptomic_dataset.ipynb
         - [ ] add new genes to GSE194078
         - [ ] concatenate all transcriptomic dataset
-        - [ ] add cell types labels
-        - [ ] split CSF and PBMC
+        - [X] add cell types labels
+        - [X] split CSF and PBMC
         - [ ] split HC and patiens
         - [ ] split train and test with stratification on labels and HC/P (both for CSF and PBMC)
 
@@ -31,8 +31,8 @@
         - [ ] EDA train set
         - [ ] split train and validation
 
-- [ ] MRI?
+- [X] MRI? (NOT TO DO)
     - [ ] 14_MRI_data.ipynb
     - [ ]brain lesion also in GSE173787
 
-- [ ] Metabolomic?
+- [X] Metabolomic? (NOT TO DO)
