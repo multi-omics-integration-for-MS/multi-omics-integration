@@ -19,9 +19,9 @@
     
     - [X] BBKNN non integra correttamente, usare altra lib (in R)
 
-    - [ ] 12_transcriptomic_dataset.ipynb
-        - [ ] add new genes to GSE194078
-        - [ ] concatenate all transcriptomic dataset
+    - [X] 12_transcriptomic_dataset.ipynb
+        - [X] add new genes to GSE194078
+        - [X] concatenate all transcriptomic dataset
         - [X] add cell types labels
         - [X] split CSF and PBMC
         - [X] split HC and patiens
@@ -36,6 +36,13 @@
 
 - [X] MRI? (NOT TO DO)
     - [ ] 14_MRI_data.ipynb
-    - [ ]brain lesion also in GSE173787
+    - [ ] brain lesion also in GSE173787
 
 - [X] Metabolomic? (NOT TO DO)
+
+- [ ] REPORT, files:
+    - clustering: 01_proteins_clustering.ipynb + 02_assess_clustering_robustness.ipynb
+    - labels: 03_GSE239626_labels_from_proteins.ipynb
+    - labels: 10_BBKNN_GSE239626_GSE194078.ipynb + 11_BBKNN_GSE239626_GSE138266.ipynb
+    - EDA: 13_EDA_transcriptomic_dataset.ipynb
+    - differential expression analysis:
