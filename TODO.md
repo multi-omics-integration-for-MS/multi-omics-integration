@@ -27,8 +27,8 @@
         - [X] split HC and patiens
         - [X] split train and test with stratification on labels and HC/P (both for CSF and PBMC) (NOT TO DO)
 
-    - [ ] 13_EDA_transcriptomic_dataset.ipynb
-        - [ ] EDA tutto dataset
+    - [X] 13_EDA_transcriptomic_dataset.ipynb
+        - [X] EDA tutto dataset
 
 - [ ] differential expression analysis: 15_differential_expression_analysis.ipynb
 
