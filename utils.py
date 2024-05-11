@@ -70,7 +70,6 @@ def sankey_plot(
                     pad = 15,
                     thickness = 20,
                     line = dict(color = "black", width = 0.5),
-                    #label = plot_labels, #FIXME: labels_titles
                     color = colors
                 ),
                 link = dict(

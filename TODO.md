@@ -29,13 +29,15 @@
 
     - [X] 13_EDA_transcriptomic_dataset.ipynb
         - [X] EDA tutto dataset
+        
+- [ ] cambiare parametri clustering (?) in notebook 14_clustering_and_finding_markers_gene.ipynb
 
 - [ ] differential expression analysis: 15_differential_expression_analysis.ipynb
 
 - [ ] gene integration
 
 - [X] MRI? (NOT TO DO)
-    - [ ] 14_MRI_data.ipynb
+    - [ ] MRI_data.ipynb
     - [ ] brain lesion also in GSE173787
 
 - [X] Metabolomic? (NOT TO DO)
