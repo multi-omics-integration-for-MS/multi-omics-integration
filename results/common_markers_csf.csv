@@ -2,7 +2,7 @@ Cell Type,Common Markers
 B cells,{'MEF2C'}
 DC,set()
 HSC/MPP,{'MGAT4C'}
-ILC,"{'TYROBP', 'FCER1G'}"
-Monocytes,"{'FAM209A', 'AL359475.1', 'CASS4'}"
-Plasma cells,"{'AC105389.2', 'FAM209A', 'BX649632.1', 'AL391730.2', 'CASS4', 'AC093732.2', 'LINC01716'}"
-T cells,"{'SYNE2', 'CD69', 'TSHZ2', 'DGKA', 'KLRG1', 'GZMK', 'ATP8B2', 'PDE3B'}"
+ILC,"{'FCER1G', 'TYROBP'}"
+Monocytes,"{'AL359475.1', 'FAM209A', 'CASS4'}"
+Plasma cells,"{'CASS4', 'BX649632.1', 'LINC01716', 'AC105389.2', 'FAM209A', 'AL391730.2', 'AC093732.2'}"
+T cells,"{'CD69', 'GZMK', 'SYNE2', 'ATP8B2', 'TSHZ2', 'PDE3B', 'KLRG1', 'DGKA'}"
