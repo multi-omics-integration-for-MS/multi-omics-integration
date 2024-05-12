@@ -48,4 +48,5 @@
     - labels: 03_GSE239626_labels_from_proteins.ipynb
     - labels: 10_BBKNN_GSE239626_GSE194078.ipynb + 11_BBKNN_GSE239626_GSE138266.ipynb
     - EDA: 13_EDA_transcriptomic_dataset.ipynb
-    - differential expression analysis: 16_differential_expression_analysis.ipynb (TODO)
+    - differential expression analysis: NOTEBOOK 17, 18, 19, 20
+    - differential expression analysis results 21_markers.ipynb
