@@ -32,7 +32,8 @@
         
 - [ ] cambiare parametri clustering (?) in notebook 14_clustering_and_finding_markers_gene.ipynb
 
-- [ ] differential expression analysis: 15_differential_expression_analysis.ipynb
+- [X] differential expression analysis: 16_differential_expression_analysis.ipynb
+- [ ] ridurre rumore cellule e ri runnare nb 16_differential_expression_analysis.ipynb (o usare solo cell type più frequenti)
 
 - [ ] gene integration
 
@@ -46,5 +47,5 @@
     - clustering: 01_proteins_clustering.ipynb + 02_assess_clustering_robustness.ipynb
     - labels: 03_GSE239626_labels_from_proteins.ipynb
     - labels: 10_BBKNN_GSE239626_GSE194078.ipynb + 11_BBKNN_GSE239626_GSE138266.ipynb
-    - EDA: 13_EDA_transcriptomic_dataset.ipynb + 14_clustering_and_finding_markers_gene.ipynb
-    - differential expression analysis: 15_differential_expression_analysis.ipynb (TODO)
+    - EDA: 13_EDA_transcriptomic_dataset.ipynb
+    - differential expression analysis: 16_differential_expression_analysis.ipynb (TODO)
