@@ -3,6 +3,6 @@ B cells,{'MEF2C'}
 DC,set()
 HSC/MPP,{'MGAT4C'}
 ILC,"{'FCER1G', 'TYROBP'}"
-Monocytes,"{'AL359475.1', 'FAM209A', 'CASS4'}"
-Plasma cells,"{'CASS4', 'BX649632.1', 'LINC01716', 'AC105389.2', 'FAM209A', 'AL391730.2', 'AC093732.2'}"
-T cells,"{'CD69', 'GZMK', 'SYNE2', 'ATP8B2', 'TSHZ2', 'PDE3B', 'KLRG1', 'DGKA'}"
+Monocytes,"{'FAM209A', 'CASS4', 'AL359475.1'}"
+Plasma cells,"{'AC093732.2', 'FAM209A', 'AC105389.2', 'AL391730.2', 'LINC01716', 'CASS4', 'BX649632.1'}"
+T cells,"{'ATP8B2', 'DGKA', 'SYNE2', 'GZMK', 'TSHZ2', 'PDE3B', 'CD69', 'KLRG1'}"
