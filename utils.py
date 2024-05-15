@@ -1,8 +1,11 @@
+import warnings
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.offline as pyo
+import scanpy as sc
 import seaborn as sns
 
 
@@ -205,3 +208,67 @@ def sankey_plot_with_labels(
     if path is not None:
         pyo.plot(fig, filename=path, auto_open=False)
         fig.write_image(path.replace('.html', '.svg'))
+
+def visualize_p_value_adj(adata_cell_type, cell_type_name, method='t-test'):
+    fig, axs = plt.subplots(2, 1, figsize=(18, 6))
+
+    axs[0].plot(adata_cell_type.uns[method]['pvals_adj']['MS'], label='MS cells')
+    axs[0].plot([0, len(adata_cell_type.uns[method]['pvals_adj']['MS'])], [0.05, 0.05], 'r--')
+    axs[0].set_xlabel('Genes ranked by score on MS cells')
+    axs[0].set_ylabel('p-value adjusted')
+    axs[0].set_xticks([])
+    axs[0].legend()
+
+    axs[1].plot(adata_cell_type.uns[method]['pvals_adj']['HC'], label='HC cells')
+    axs[1].plot([0, len(adata_cell_type.uns[method]['pvals_adj']['HC'])], [0.05, 0.05], 'r--')
+    axs[1].set_xlabel('Genes ranked by score on HC cells')
+    axs[1].set_ylabel('p-value adjusted')
+    axs[1].set_xticks([])
+
+    plt.legend()
+    plt.suptitle(f'{cell_type_name} p-values adjusted for multiple testing')
+    plt.tight_layout()
+    plt.show()
+
+def dotplots_and_ranking_most_significant_genes(adata_cell_type, cell_type_name, n_genes=50, method='t-test'):
+    sc.pl.rank_genes_groups(adata_cell_type, n_genes=n_genes, sharey=True, ncols=2, fontsize=6)
+
+    sc.pl.dotplot(adata_cell_type, var_names=adata_cell_type.uns[method]['names']['MS'][:n_genes],
+        groupby='MS/HC', expression_cutoff=0.1, title=f'{cell_type_name} most significant genes in MS cells (MS vs HC)')
+
+    sc.pl.dotplot(adata_cell_type, var_names=adata_cell_type.uns[method]['names']['HC'][:n_genes],
+        groupby='MS/HC', expression_cutoff=0.1, title=f'{cell_type_name} most significant genes in HC cells (HC vs MS)')
+
+    sc.pl.rank_genes_groups_matrixplot(adata_cell_type, n_genes=20, key=method, groupby='MS/HC',
+        title=f'{cell_type_name} most significant genes in MS cells')
+
+def visualize_rank_genes_groups_violin(adata_cell_type, cell_type_name, method='t-test'):
+    with warnings.catch_warnings():
+        fig, axs = plt.subplots(1, 2, figsize=(15, 5))
+        sc.pl.rank_genes_groups_violin(adata_cell_type, groups=['MS'], n_genes=10, key=method, show=False, ax=axs[0])
+        axs[0].set_title('Genes most expressed in MS cells')
+
+        sc.pl.rank_genes_groups_violin(adata_cell_type, groups=['HC'], n_genes=10, key=method, show=False, ax=axs[1])
+        axs[1].set_title('Genes most expressed in HC cells')
+
+        plt.suptitle(f'{cell_type_name} expression in MS and HC')
+        plt.show()
+
+        sc.pl.rank_genes_groups_stacked_violin(adata_cell_type, n_genes=20, groupby='MS/HC', key=method, figsize=(15, 3))
+
+def visualize_venn_diagram_ttest_vs_wilcoxon(adata_cell_type, cell_type_name):
+    wc_ms = sc.get.rank_genes_groups_df(adata_cell_type, group='MS', key='wilcoxon', pval_cutoff=0.01, log2fc_min=0)['names']
+    wc_hc = sc.get.rank_genes_groups_df(adata_cell_type, group='HC', key='wilcoxon', pval_cutoff=0.01, log2fc_min=0)['names']
+    tt_ms = sc.get.rank_genes_groups_df(adata_cell_type, group='MS', key='t-test', pval_cutoff=0.01, log2fc_min=0)['names']
+    tt_hc = sc.get.rank_genes_groups_df(adata_cell_type, group='HC', key='t-test', pval_cutoff=0.01, log2fc_min=0)['names']
+
+    from matplotlib_venn import venn2
+    fig, axs = plt.subplots(1, 2, figsize=(10, 4))
+    venn2([set(tt_ms), set(wc_ms)], set_labels=('MS genes', 'HC genes'), ax=axs[0])
+    axs[0].set_title('T-test')
+    venn2([set(tt_hc), set(wc_hc)], set_labels=('MS genes', 'HC genes'), ax=axs[1])
+    axs[1].set_title('Wilcoxon')
+
+    plt.suptitle(f'Most expressed genes in {cell_type_name} (p-value < 0.01)')
+    plt.tight_layout()
+    plt.show()
