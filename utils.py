@@ -1,3 +1,4 @@
+import json
 import warnings
 
 import matplotlib.pyplot as plt
@@ -7,6 +8,8 @@ import plotly.graph_objects as go
 import plotly.offline as pyo
 import scanpy as sc
 import seaborn as sns
+
+RESULTS_PATH = 'results/'
 
 
 def sankey_plot(
@@ -209,7 +212,7 @@ def sankey_plot_with_labels(
         pyo.plot(fig, filename=path, auto_open=False)
         fig.write_image(path.replace('.html', '.svg'))
 
-def visualize_p_value_adj(adata_cell_type, cell_type_name, method='t-test'):
+def visualize_p_value_adj(adata_cell_type, cell_type_name, method='wilcoxon'):
     fig, axs = plt.subplots(2, 1, figsize=(18, 6))
 
     axs[0].plot(adata_cell_type.uns[method]['pvals_adj']['MS'], label='MS cells')
@@ -230,7 +233,7 @@ def visualize_p_value_adj(adata_cell_type, cell_type_name, method='t-test'):
     plt.tight_layout()
     plt.show()
 
-def dotplots_and_ranking_most_significant_genes(adata_cell_type, cell_type_name, n_genes=50, method='t-test'):
+def dotplots_and_ranking_most_significant_genes(adata_cell_type, cell_type_name, n_genes=50, method='wilcoxon'):
     sc.pl.rank_genes_groups(adata_cell_type, n_genes=n_genes, sharey=True, ncols=2, fontsize=6)
 
     sc.pl.dotplot(adata_cell_type, var_names=adata_cell_type.uns[method]['names']['MS'][:n_genes],
@@ -242,7 +245,7 @@ def dotplots_and_ranking_most_significant_genes(adata_cell_type, cell_type_name,
     sc.pl.rank_genes_groups_matrixplot(adata_cell_type, n_genes=20, key=method, groupby='MS/HC',
         title=f'{cell_type_name} most significant genes in MS cells')
 
-def visualize_rank_genes_groups_violin(adata_cell_type, cell_type_name, method='t-test'):
+def visualize_rank_genes_groups_violin(adata_cell_type, cell_type_name, method='wilcoxon'):
     with warnings.catch_warnings():
         fig, axs = plt.subplots(1, 2, figsize=(15, 5))
         sc.pl.rank_genes_groups_violin(adata_cell_type, groups=['MS'], n_genes=10, key=method, show=False, ax=axs[0])
@@ -256,11 +259,11 @@ def visualize_rank_genes_groups_violin(adata_cell_type, cell_type_name, method='
 
         sc.pl.rank_genes_groups_stacked_violin(adata_cell_type, n_genes=20, groupby='MS/HC', key=method, figsize=(15, 3))
 
-def visualize_venn_diagram_ttest_vs_wilcoxon(adata_cell_type, cell_type_name):
-    wc_ms = sc.get.rank_genes_groups_df(adata_cell_type, group='MS', key='wilcoxon', pval_cutoff=0.01, log2fc_min=0)['names']
-    wc_hc = sc.get.rank_genes_groups_df(adata_cell_type, group='HC', key='wilcoxon', pval_cutoff=0.01, log2fc_min=0)['names']
-    tt_ms = sc.get.rank_genes_groups_df(adata_cell_type, group='MS', key='t-test', pval_cutoff=0.01, log2fc_min=0)['names']
-    tt_hc = sc.get.rank_genes_groups_df(adata_cell_type, group='HC', key='t-test', pval_cutoff=0.01, log2fc_min=0)['names']
+def visualize_venn_diagram_ttest_vs_wilcoxon(adata_cell_type, cell_type_name, p_threshold=0.01):
+    wc_ms = sc.get.rank_genes_groups_df(adata_cell_type, group='MS', key='wilcoxon', pval_cutoff=p_threshold, log2fc_min=0)['names']
+    wc_hc = sc.get.rank_genes_groups_df(adata_cell_type, group='HC', key='wilcoxon', pval_cutoff=p_threshold, log2fc_min=0)['names']
+    tt_ms = sc.get.rank_genes_groups_df(adata_cell_type, group='MS', key='t-test', pval_cutoff=p_threshold, log2fc_min=0)['names']
+    tt_hc = sc.get.rank_genes_groups_df(adata_cell_type, group='HC', key='t-test', pval_cutoff=p_threshold, log2fc_min=0)['names']
 
     from matplotlib_venn import venn2
     fig, axs = plt.subplots(1, 2, figsize=(10, 4))
@@ -272,3 +275,89 @@ def visualize_venn_diagram_ttest_vs_wilcoxon(adata_cell_type, cell_type_name):
     plt.suptitle(f'Most expressed genes in {cell_type_name} (p-value < 0.01)')
     plt.tight_layout()
     plt.show()
+
+def volcano_plot(adata_cell_type, cell_type_name, p_adj_threshold=1e-50, logFC_threshold=0.5, method='wilcoxon'):
+    fig, axs = plt.subplots(1, 2, figsize=(18, 6))
+
+    up_regulated_genes_MS = []
+    up_regulated_genes_HC = []
+    down_regulated_genes_MS = []
+    down_regulated_genes_HC = []
+
+    with warnings.catch_warnings():
+        for ax, group in zip(axs, ['MS', 'HC']):
+            data = sc.get.rank_genes_groups_df(adata_cell_type, group=group, key=method, pval_cutoff=0.05)
+            p_adj_list = data['pvals_adj'].unique()
+            p_adj_list.sort()
+            min_nnz_p_adj = p_adj_list[1]
+
+            down_reg_x = []
+            down_reg_y = []
+            up_reg_x = []
+            up_reg_y = []
+            not_sign_x = []
+            not_sign_y = []
+
+            for index, row in data.iterrows():
+                logFC = row['logfoldchanges']
+                p_adj = row['pvals_adj']
+
+                if p_adj < p_adj_threshold:
+                    if p_adj == 0: 
+                        p_adj = min_nnz_p_adj
+                    if logFC > logFC_threshold:
+                        if group == 'MS':
+                            up_regulated_genes_MS.append(row['names'])
+                        else:
+                            up_regulated_genes_HC.append(row['names'])
+
+                        up_reg_x.append(logFC)
+                        up_reg_y.append(p_adj)
+                    elif logFC < -logFC_threshold:
+                        if group == 'MS':
+                            down_regulated_genes_MS.append(row['names'])
+                        else:
+                            down_regulated_genes_HC.append(row['names'])
+                        
+                        down_reg_x.append(logFC)
+                        down_reg_y.append(p_adj)
+                    else:
+                        not_sign_x.append(logFC)
+                        not_sign_y.append(p_adj)
+                else:
+                    not_sign_x.append(logFC)
+                    not_sign_y.append(p_adj)
+
+            ax.scatter(up_reg_x, -np.log10(up_reg_y), color='red', alpha=0.4, s=3, label='Up regulated')
+            ax.scatter(down_reg_x, -np.log10(down_reg_y), color='blue', alpha=0.4, s=3, label='Down regulated')
+            ax.scatter(not_sign_x, -np.log10(not_sign_y), color='grey', alpha=0.4, s=3, label='Not significant')
+
+            ax.axvline(x=logFC_threshold, color='black', linestyle='--', linewidth=1)
+            ax.axvline(x=-logFC_threshold, color='black', linestyle='--', linewidth=1)
+            
+            ax.set_xlabel('Log Fold Change')
+            ax.set_ylabel('-log10(p-value)')
+            ax.set_title(f'Volcano Plot for {group}')
+            
+        fig.suptitle(f'Volcano Plot for most expressed genes in {cell_type_name}')
+        plt.show()
+    
+    significant_genes = {
+        'cell_type': cell_type_name,
+        'p_adj_threshold': p_adj_threshold,
+        'logFC_threshold': logFC_threshold,
+        'method': 'wilcoxon',
+        'up_regulated_genes_MS': up_regulated_genes_MS,
+        'up_regulated_genes_HC': up_regulated_genes_HC,
+        'down_regulated_genes_MS': down_regulated_genes_MS,
+        'down_regulated_genes_HC': down_regulated_genes_HC
+    }
+
+    if cell_type_name == 'HSC/MPP':
+        cell_type_name = 'HSC_MPP'
+    elif cell_type_name == 'T cells':
+        cell_type_name = 'T_cells'
+    elif cell_type_name == 'B cells':
+        cell_type_name = 'B_cells'
+    with open(RESULTS_PATH+'significant_genes_'+cell_type_name+'.json', 'w') as f:
+        json.dump(significant_genes, f)
