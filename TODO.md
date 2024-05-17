@@ -37,7 +37,7 @@
 
 - [X] differential expression analysis (all cell types): NOTEBOOK 17, 18, 19, 20 + results 21_markers.ipynb
 
-- [ ] gene integration
+- [ ] gene integration: 25_microRNA_GSE159033.ipynb
 
 - [X] MRI? (NOT TO DO)
     - [ ] MRI_data.ipynb
