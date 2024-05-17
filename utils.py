@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 import plotly.offline as pyo
 import scanpy as sc
 import seaborn as sns
+from matplotlib_venn import venn2
 
 RESULTS_PATH = 'results/'
 
@@ -212,7 +213,7 @@ def sankey_plot_with_labels(
         pyo.plot(fig, filename=path, auto_open=False)
         fig.write_image(path.replace('.html', '.svg'))
 
-def visualize_p_value_adj(adata_cell_type, cell_type_name, method='wilcoxon'):
+def visualize_p_value_adj(adata_cell_type, cell_type_name, pbmc_csf, method='wilcoxon'):
     fig, axs = plt.subplots(2, 1, figsize=(18, 6))
 
     axs[0].plot(adata_cell_type.uns[method]['pvals_adj']['MS'], label='MS cells')
@@ -229,11 +230,11 @@ def visualize_p_value_adj(adata_cell_type, cell_type_name, method='wilcoxon'):
     axs[1].set_xticks([])
 
     plt.legend()
-    plt.suptitle(f'{cell_type_name} p-values adjusted for multiple testing')
+    plt.suptitle(f'{pbmc_csf} {cell_type_name} p-values adjusted for multiple testing')
     plt.tight_layout()
     plt.show()
 
-def dotplots_and_ranking_most_significant_genes(adata_cell_type, cell_type_name, n_genes=50, method='wilcoxon'):
+def dotplots_and_ranking_most_significant_genes(adata_cell_type, cell_type_name, pbmc_csf, n_genes=50, method='wilcoxon'):
     sc.pl.rank_genes_groups(adata_cell_type, n_genes=n_genes, sharey=True, ncols=2, fontsize=6)
 
     sc.pl.dotplot(adata_cell_type, var_names=adata_cell_type.uns[method]['names']['MS'][:n_genes],
@@ -243,9 +244,9 @@ def dotplots_and_ranking_most_significant_genes(adata_cell_type, cell_type_name,
         groupby='MS/HC', expression_cutoff=0.1, title=f'{cell_type_name} most significant genes in HC cells (HC vs MS)')
 
     sc.pl.rank_genes_groups_matrixplot(adata_cell_type, n_genes=20, key=method, groupby='MS/HC',
-        title=f'{cell_type_name} most significant genes in MS cells')
+        title=f'{pbmc_csf} {cell_type_name} most significant genes in MS cells')
 
-def visualize_rank_genes_groups_violin(adata_cell_type, cell_type_name, method='wilcoxon'):
+def visualize_rank_genes_groups_violin(adata_cell_type, cell_type_name, pbmc_csf, method='wilcoxon'):
     with warnings.catch_warnings():
         fig, axs = plt.subplots(1, 2, figsize=(15, 5))
         sc.pl.rank_genes_groups_violin(adata_cell_type, groups=['MS'], n_genes=10, key=method, show=False, ax=axs[0])
@@ -254,29 +255,28 @@ def visualize_rank_genes_groups_violin(adata_cell_type, cell_type_name, method='
         sc.pl.rank_genes_groups_violin(adata_cell_type, groups=['HC'], n_genes=10, key=method, show=False, ax=axs[1])
         axs[1].set_title('Genes most expressed in HC cells')
 
-        plt.suptitle(f'{cell_type_name} expression in MS and HC')
+        plt.suptitle(f'{pbmc_csf} {cell_type_name} expression in MS and HC')
         plt.show()
 
         sc.pl.rank_genes_groups_stacked_violin(adata_cell_type, n_genes=20, groupby='MS/HC', key=method, figsize=(15, 3))
 
-def visualize_venn_diagram_ttest_vs_wilcoxon(adata_cell_type, cell_type_name, p_threshold=0.01):
+def visualize_venn_diagram_ttest_vs_wilcoxon(adata_cell_type, cell_type_name, pbmc_csf, p_threshold=0.01):
     wc_ms = sc.get.rank_genes_groups_df(adata_cell_type, group='MS', key='wilcoxon', pval_cutoff=p_threshold, log2fc_min=0)['names']
     wc_hc = sc.get.rank_genes_groups_df(adata_cell_type, group='HC', key='wilcoxon', pval_cutoff=p_threshold, log2fc_min=0)['names']
     tt_ms = sc.get.rank_genes_groups_df(adata_cell_type, group='MS', key='t-test', pval_cutoff=p_threshold, log2fc_min=0)['names']
     tt_hc = sc.get.rank_genes_groups_df(adata_cell_type, group='HC', key='t-test', pval_cutoff=p_threshold, log2fc_min=0)['names']
 
-    from matplotlib_venn import venn2
     fig, axs = plt.subplots(1, 2, figsize=(10, 4))
     venn2([set(tt_ms), set(wc_ms)], set_labels=('MS genes', 'HC genes'), ax=axs[0])
     axs[0].set_title('T-test')
     venn2([set(tt_hc), set(wc_hc)], set_labels=('MS genes', 'HC genes'), ax=axs[1])
     axs[1].set_title('Wilcoxon')
 
-    plt.suptitle(f'Most expressed genes in {cell_type_name} (p-value < 0.01)')
+    plt.suptitle(f'Most expressed genes in {pbmc_csf} {cell_type_name} (p-value < 0.01)')
     plt.tight_layout()
     plt.show()
 
-def volcano_plot(adata_cell_type, cell_type_name, p_adj_threshold=1e-50, logFC_threshold=0.5, method='wilcoxon'):
+def volcano_plot(adata_cell_type, cell_type_name, pbmc_csf, p_adj_threshold=1e-30, logFC_threshold=0.5, method='wilcoxon'):
     fig, axs = plt.subplots(1, 2, figsize=(18, 6))
 
     up_regulated_genes_MS = []
@@ -328,8 +328,8 @@ def volcano_plot(adata_cell_type, cell_type_name, p_adj_threshold=1e-50, logFC_t
                     not_sign_x.append(logFC)
                     not_sign_y.append(p_adj)
 
-            ax.scatter(up_reg_x, -np.log10(up_reg_y), color='red', alpha=0.4, s=3, label='Up regulated')
-            ax.scatter(down_reg_x, -np.log10(down_reg_y), color='blue', alpha=0.4, s=3, label='Down regulated')
+            ax.scatter(up_reg_x, -np.log10(up_reg_y), color='red', alpha=0.4, s=3, label='Upregulated')
+            ax.scatter(down_reg_x, -np.log10(down_reg_y), color='blue', alpha=0.4, s=3, label='Downregulated')
             ax.scatter(not_sign_x, -np.log10(not_sign_y), color='grey', alpha=0.4, s=3, label='Not significant')
 
             ax.axvline(x=logFC_threshold, color='black', linestyle='--', linewidth=1)
@@ -338,8 +338,9 @@ def volcano_plot(adata_cell_type, cell_type_name, p_adj_threshold=1e-50, logFC_t
             ax.set_xlabel('Log Fold Change')
             ax.set_ylabel('-log10(p-value)')
             ax.set_title(f'Volcano Plot for {group}')
+            ax.legend()
             
-        fig.suptitle(f'Volcano Plot for most expressed genes in {cell_type_name}')
+        fig.suptitle(f'Volcano Plot for most expressed genes in {pbmc_csf} {cell_type_name}')
         plt.show()
     
     significant_genes = {
@@ -359,5 +360,7 @@ def volcano_plot(adata_cell_type, cell_type_name, p_adj_threshold=1e-50, logFC_t
         cell_type_name = 'T_cells'
     elif cell_type_name == 'B cells':
         cell_type_name = 'B_cells'
-    with open(RESULTS_PATH+'significant_genes_'+cell_type_name+'.json', 'w') as f:
+    elif cell_type_name == 'Plasma cells':
+        cell_type_name = 'Plasma_cells'
+    with open(RESULTS_PATH+'significant_genes_'+cell_type_name+'_'+pbmc_csf+'.json', 'w') as f:
         json.dump(significant_genes, f)

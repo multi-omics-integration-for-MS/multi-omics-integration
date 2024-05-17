@@ -1,0 +1,1 @@
+{"cell_type": "DC", "p_adj_threshold": 1e-30, "logFC_threshold": 0.5, "method": "wilcoxon", "up_regulated_genes_MS": [], "up_regulated_genes_HC": [], "down_regulated_genes_MS": [], "down_regulated_genes_HC": []}

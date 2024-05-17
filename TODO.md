@@ -35,6 +35,8 @@
 - [X] differential expression analysis: 16_differential_expression_analysis.ipynb
 - [ ] ridurre rumore cellule e ri runnare nb 16_differential_expression_analysis.ipynb (o usare solo cell type più frequenti)
 
+- [X] differential expression analysis (all cell types): NOTEBOOK 17, 18, 19, 20 + results 21_markers.ipynb
+
 - [ ] gene integration
 
 - [X] MRI? (NOT TO DO)
@@ -48,5 +50,6 @@
     - labels: 03_GSE239626_labels_from_proteins.ipynb
     - labels: 10_BBKNN_GSE239626_GSE194078.ipynb + 11_BBKNN_GSE239626_GSE138266.ipynb
     - EDA: 13_EDA_transcriptomic_dataset.ipynb
-    - differential expression analysis (all cell types): NOTEBOOK 17, 18, 19, 20 + results 21_markers.ipynb
-    - differential expression analysis: 23_differential_expression_plots.ipynb
+    - differential expression analysis: 22_differential_expression_per_cell_types.ipynb.ipynb + 23_most_expressive_genes.ipynb
+        thresholds: p-value adjusted < 1e-50, abs(logFC) > 0.5
+    - gene integration (T cells): 24_T_cells_genes_integration_GSE173787.ipynb
