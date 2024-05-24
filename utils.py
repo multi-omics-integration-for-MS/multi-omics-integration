@@ -364,3 +364,64 @@ def volcano_plot(adata_cell_type, cell_type_name, pbmc_csf, p_adj_threshold=1e-3
         cell_type_name = 'Plasma_cells'
     with open(RESULTS_PATH+'significant_genes_'+cell_type_name+'_'+pbmc_csf+'.json', 'w') as f:
         json.dump(significant_genes, f)
+
+def volcano_plot_MS_wrt_HC(adata_cell_type, cell_type_name, pbmc_csf, p_adj_threshold=1e-30, logFC_threshold=0.5, method='wilcoxon'):
+    plt.figure(figsize=(9, 6))
+
+    up_regulated_genes_MS = []
+    down_regulated_genes_MS = []
+
+    with warnings.catch_warnings():
+        data = sc.get.rank_genes_groups_df(adata_cell_type, group='MS', key=method, pval_cutoff=0.05)
+        p_adj_list = data['pvals_adj'].unique()
+        p_adj_list.sort()
+        min_nnz_p_adj = p_adj_list[1]
+
+        down_reg_x = []
+        down_reg_y = []
+        up_reg_x = []
+        up_reg_y = []
+        not_sign_x = []
+        not_sign_y = []
+
+        for index, row in data.iterrows():
+            logFC = row['logfoldchanges']
+            p_adj = row['pvals_adj']
+
+            if p_adj < p_adj_threshold:
+                if p_adj == 0: 
+                    p_adj = min_nnz_p_adj
+                if logFC > logFC_threshold:
+                    up_regulated_genes_MS.append(row['names'])
+
+                    up_reg_x.append(logFC)
+                    up_reg_y.append(p_adj)
+                elif logFC < -logFC_threshold:
+                    down_regulated_genes_MS.append(row['names'])
+                    
+                    down_reg_x.append(logFC)
+                    down_reg_y.append(p_adj)
+                else:
+                    not_sign_x.append(logFC)
+                    not_sign_y.append(p_adj)
+            else:
+                not_sign_x.append(logFC)
+                not_sign_y.append(p_adj)
+
+        plt.scatter(up_reg_x, -np.log10(up_reg_y), color='red', alpha=0.4, s=3, label='Upregulated')
+        plt.scatter(down_reg_x, -np.log10(down_reg_y), color='blue', alpha=0.4, s=3, label='Downregulated')
+        plt.scatter(not_sign_x, -np.log10(not_sign_y), color='grey', alpha=0.4, s=3, label='Not significant')
+
+        plt.axvline(x=logFC_threshold, color='black', linestyle='--', linewidth=1)
+        plt.axvline(x=-logFC_threshold, color='black', linestyle='--', linewidth=1)
+        
+        plt.xlabel('Log Fold Change')
+        plt.ylabel('-log10(p-value)')
+        plt.title(f'Volcano Plot for most expressed genes in {pbmc_csf} {cell_type_name} for MS w.r.t. HC')
+        plt.legend()
+        plt.show()
+
+        # save figure
+        fig = plt.gcf()
+        fig.set_size_inches(9, 6)
+        #fig.savefig('figures/volcano_plot_MS_wrt_HC_'+cell_type_name+'_'+pbmc_csf+'.png')
