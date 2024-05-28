@@ -1,8 +1,6 @@
 __pycache__
 cache
-data
-write
+src/data
+src/write
 
-notebooks/celltypist/celltypist_demo_folder/
-data_with_neighbors.h5ad
-results/Immune_All_High_GSE239626_model.pkl
+src/results/Immune_All_High_GSE239626_model.pkl
